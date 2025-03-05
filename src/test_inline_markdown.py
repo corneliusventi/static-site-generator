@@ -2,7 +2,7 @@ import unittest
 
 from inline_markdown import (
     split_nodes_delimiter, extract_markdown_images, extract_markdown_links,
-    split_nodes_image, split_nodes_link
+    split_nodes_image, split_nodes_link, text_to_textnodes
 )
 from textnode import TextType, TextNode
 
@@ -130,4 +130,53 @@ class TestInlineMarkdown(unittest.TestCase):
                 ),
             ],
             new_nodes,
+        )
+
+    def test_text_to_textnodes(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        text_nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ],
+            text_nodes,
+        )
+
+    def test_text_to_textnodes_multiple(self):
+        text = "This is **bold text** and _italic text_, another **bold phrase** and _italic phrase_, with `inline code` and another `code snippet`, an ![cat image](https://i.imgur.com/JpCkQwX.jpeg) and an ![dog image](https://i.imgur.com/wx1W34M.jpeg), plus a [link to MDN](https://developer.mozilla.org/) and a [link to GitHub](https://github.com/)."
+        text_nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("bold text", TextType.BOLD),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("italic text", TextType.ITALIC),
+                TextNode(", another ", TextType.TEXT),
+                TextNode("bold phrase", TextType.BOLD),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("italic phrase", TextType.ITALIC),
+                TextNode(", with ", TextType.TEXT),
+                TextNode("inline code", TextType.CODE),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode("code snippet", TextType.CODE),
+                TextNode(", an ", TextType.TEXT),
+                TextNode("cat image", TextType.IMAGE, "https://i.imgur.com/JpCkQwX.jpeg"),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("dog image", TextType.IMAGE, "https://i.imgur.com/wx1W34M.jpeg"),
+                TextNode(", plus a ", TextType.TEXT),
+                TextNode("link to MDN", TextType.LINK, "https://developer.mozilla.org/"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link to GitHub", TextType.LINK, "https://github.com/"),
+                TextNode(".", TextType.TEXT),
+            ],
+            text_nodes,
         )
