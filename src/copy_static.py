@@ -2,7 +2,7 @@ import os
 import shutil
 
 
-def copy_static(to_path="./public", from_path="./static"):
+def copy_static(to_path, from_path):
     if not os.path.exists(to_path):
         os.mkdir(to_path)
     items = os.listdir(from_path)

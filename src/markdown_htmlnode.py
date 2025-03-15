@@ -21,7 +21,7 @@ def block_to_html_node(block):
             tag = f"h{len(parts[0])}"
             return ParentNode(tag, text_to_children(parts[1]))
         case BlockType.CODE:
-            text = block.strip("```")
+            text = block.strip("```").lstrip()
             text_node = TextNode(text, TextType.TEXT)
             child = text_node_to_html_node(text_node)
             code = ParentNode("code", [child])
