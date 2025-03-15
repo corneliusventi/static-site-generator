@@ -22,7 +22,6 @@ def markdown_to_blocks(markdown):
 
 
 def block_to_block_type(block):
-    pass
     if is_heading_block(block):
         return BlockType.HEADING
     elif is_code_block(block):
